@@ -29,4 +29,38 @@ If we want to split between PG1 and PG2, We can't store that information to the 
 solution - Math.Random , it will generate random number between 1 and 10 , it will be equally distributed between these two. We can write a logic, if it is less than 7, We can route to Razor pay and If we are getting >7, we can route to the stripe
 Refer the payment gateway related libraries in to the pom.xml
 It should be along with the version
-In the configuration class if we have different keys, you have to define that in the app.properties. Else in the mvn install you will have the issue 
+In the configuration class if we have different keys, you have to define that in the app.properties. Else in the mvn install you will have the issue
+
+29.03.2024
+Steps
+
+Create PaymentController and write a request body to get the request
+
+
+
+Create Interface for PaymentService.
+	It should have the abstract method to receive the PaymentResponse Object, This is the one which is sent by Payment Gateway .
+
+
+Implement the Interface Payment Service and Create a Implementation class RazorPaymentServiceImpl for razor pay payment gateway with the qualifier as Razorpay
+
+Similiarly we have to implement for the StripePaymentGateway  with the qualifer as Stripe
+
+Refer the PaymentService Interface in the Payment Controller class
+
+Create RequestDTO. This is the object from client calling to the PaymentController. . In this case, We have written InitiatePaymentRequestDTO
+
+
+In the controller , write the request mapping method which takes the InitiatePaymentRequestDTO. Get the object and Call the service method . Return type should be PaymentResponse.
+
+Create configuration for RazorPay which takes the key and secrete . This is needed for connecting to the razor pay service
+
+We need to create another controller where razor pay will hit the payment service which is the call back URL
+
+In the controller inject the implementation of the Payment Service ( Razor and Stripe ) through the constructor injection
+
+In the controller , write a logic to choose the payment gateway depending on the Option. It should be either stripe or Razorpay. Accordingly the service will be called.
+
+Create the strategy class for choosing the payment Gateway
+
+
